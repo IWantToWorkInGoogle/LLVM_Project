@@ -1,3 +1,1 @@
-# LLVM_Project
-
-# Jonh Convey: Game Life
+# John Conway: Game of Life
