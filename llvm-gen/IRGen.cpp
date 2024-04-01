@@ -357,7 +357,7 @@ int main() {
         val60->addIncoming(builder.getInt32(0), BB51);
         val60->addIncoming(val58, BB53);
 //            %60 = phi i32 [ 0, %51 ], [ %58, %53 ]
-        builder.CreateCordBr(val6, BB74, BB61);
+        builder.CreateCondBr(val6, BB74, BB61);
 //            br i1 %6, label %74, label %61
 //
         builder.SetInsertPoint(BB61);
@@ -543,7 +543,7 @@ int main() {
 //
         builder.SetInsertPoint(BB131);
 //        131:                                              ; preds = %134
-        build.CreateCall(simFlushFunc, {});
+        builder.CreateCall(simFlushFunc, {});
 //            tail call void (...) @simFlush() #2
         Value *val132 = builder.CreateAdd(val2, builder.getInt32(1), "", true, true);
 //            %132 = add nuw nsw i32 %2, 1
@@ -580,7 +580,7 @@ int main() {
 //
         builder.SetInsertPoint(BB143);
 //        143:                                              ; preds = %137
-        Value *putPixelArgs1[] = {&val129, &val142, builder.getInt32(16777215)};
+        Value *putPixelArgs1[] = {val129, val142, builder.getInt32(16777215)};
         builder.CreateCall(simPutPixelFunc, putPixelArgs1);
 //            tail call void @simPutPixel(i32 noundef %129, i32 noundef %142, i32 noundef 16777215) #2
         builder.CreateBr(BB145);
@@ -588,7 +588,7 @@ int main() {
 //
         builder.SetInsertPoint(BB144);
 //        144:                                              ; preds = %137
-        Value *putPixelArgs2[] = {&val130, &val142, builder.getInt32(0)};
+        Value *putPixelArgs2[] = {val130, val142, builder.getInt32(0)};
         builder.CreateCall(simPutPixelFunc, putPixelArgs2);
 //            tail call void @simPutPixel(i32 noundef %130, i32 noundef %142, i32 noundef 0) #2
         builder.CreateBr(BB145);
