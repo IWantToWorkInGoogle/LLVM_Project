@@ -247,7 +247,7 @@ int main() {
 //
         builder.SetInsertPoint(BB11);
 //        11:                                               ; preds = %4
-        Value *val20 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
+        Value *val2 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %12 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %8, i64 0
         LoadInst *load13 = builder.CreateLoad(Type::getInt8Ty(context), val12)->setAlignment(Align(16));
         Value *val13 = builder.CreateRet(load13);
