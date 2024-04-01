@@ -4,6 +4,11 @@
 #include <time.h>
 #include "../src/sim.h"
 
+#define FRAME_TICKS 50
+#define INTENSE 5
+#define SIM_X_SIZE 512
+#define SIM_Y_SIZE 256
+
 static SDL_Renderer *Renderer = NULL;
 static SDL_Window *Window = NULL;
 static Uint32 Ticks = 0;
@@ -91,6 +96,8 @@ int simRand()
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Support/raw_ostream.h"
 
+using namespace llvm;
+
 int main() {
     LLVMContext context;
     // ; ModuleID = 'sim.c'
@@ -134,7 +141,7 @@ int main() {
                                            Type::getInt32Ty(context),
                                             Type::getInt32Ty(context)};
     FunctionType *simPutPixelType = FunctionType::get(voidType, simPutPixelParamTypes, false);
-    FunctionCalle simPutPixelFunc = module->getOrInsertFunction("simPutPixel", simPutPixelType);
+    FunctionCallee simPutPixelFunc = module->getOrInsertFunction("simPutPixel", simPutPixelType);
 // declare dso_local void @simExit()
     FunctionType *simExitType = FunctionType::get(voidType, noArgs, false);
     FunctionCallee simExitFunc = module->getOrInsertFunction("simExit", simExitType);
@@ -178,13 +185,13 @@ int main() {
         //    %1 = alloca [512 x [256 x i8]], align 1
         //    call void @llvm.lifetime.start.p0(i64 131072, ptr nonnull %1) #3
         //    br label %2
-        builder.CreateCondBr(BB2);
+        builder.CreateBr(BB2);
 
 //        2:                                                ; preds = %0, %99
         builder.SetInsertPoint(BB2);
 //            %3 = phi i32 [ 0, %0 ], [ %100, %99 ]
 //            br label %5
-        builder.CreateCondBr(BB5);
+        builder.CreateBr(BB5);
 
 //        4:                ; preds = %99
         builder.SetInsertPoint(BB4);
@@ -195,19 +202,18 @@ int main() {
 //        5:                                                ; preds = %2, %12
         builder.SetInsertPoint(BB5);
 //            %6 = phi i64 [ 0, %2 ], [ %10, %12 ]
-        PHINode *val6 = builder.CreateePHI(builder.get64Ty(), 2);
-        val6->addIncoming(builder.getInt32(0), BB0);
 //            %7 = icmp eq i64 %6, 0
         Value *val7 = builder.CreateICmpEQ(val6, builder.getInt32(0));
 //            %8 = add nuw i64 %6, 4294967295
+        Value *val8 = builder.CreateAdd(val6, builder.getInt64(4294967295), "8", true);
 //            %9 = and i64 %8, 4294967295
         Value *val9 = builder.CreateAnd(val8, builder.getInt64(4294967295));
 //            %10 = add nuw nsw i64 %6, 1
-        Value *val10 = builder.CreateAdd(val6, builder.getInt64(1), "", true, true);
+        Value *val10 = builder.CreateAdd(val6, builder.getInt64(1), "10", true, true);
 //            %11 = icmp ugt i64 %6, 510
         Value *val11 = builder.CreateICmpUGT(val6, builder.getInt64(510));
 //            br label %14
-        builder.CreateCondBr(BB14);
+        builder.CreateBr(BB14);
 
 //        12:                                               ; preds = %91
         builder.SetInsertPoint(BB12);
@@ -238,11 +244,10 @@ int main() {
         Value *val21 = builder.CreateZExt(val17, Type::getInt64Ty(context));
 //            %22 = getelementptr inbounds [512 x [256 x i8]], ptr @state, i64 0, i64 %9, i64 %21
 //            %23 = load i8, ptr %22, align 1, !tbaa !8, !range !12
-        Value *val23 = builder.CreateLoad(ptr, "loaded_value");
 //            %24 = zext i8 %23 to i32
         Value *val24 = builder.CreateZExt(val23, Type::getInt32Ty(context));
 //            br label %26
-        builder.CreateCondBr(BB26);
+        builder.CreateBr(BB26);
 //
 //        25:                                               ; preds = %14
         builder.SetInsertPoint(BB25);
@@ -257,7 +262,7 @@ int main() {
 //            %30 = zext i8 %29 to i32
         Value *val30 = builder.CreateZExt(val29, Type::getInt32Ty(context));
 //            %31 = add nuw nsw i32 %27, %30
-        Value *val31 = builder.CreateAdd(val27, val30, "", true, true);
+        Value *val31 = builder.CreateAdd(val27, val30, "31", true, true);
 //            %32 = icmp ugt i64 %15, 254
         Value *val32 = builder.CreateICmpUGT(val15, builder.getInt64(254));
 //            %33 = select i1 %32, i1 true, i1 %7
@@ -269,15 +274,15 @@ int main() {
 //        34:                                               ; preds = %26
         builder.SetInsertPoint(BB34);
 //            %35 = add nuw nsw i64 %15, 1
-        Value *val35 = builder.CreateAdd(val15, builder.getInt64(1), "", true, true);
+        Value *val35 = builder.CreateAdd(val15, builder.getInt64(1), "35", true, true);
 //            %36 = getelementptr inbounds [512 x [256 x i8]], ptr @state, i64 0, i64 %9, i64 %35
 //            %37 = load i8, ptr %36, align 1, !tbaa !8, !range !12
 //            %38 = zext i8 %37 to i32
         Value *val38 = builder.CreateZExt(val37, Type::getInt32Ty(context));
 //            %39 = add nuw nsw i32 %31, %38
-        Value *val39 = builder.CreateAdd(val31, val38, "", true, true);
+        Value *val39 = builder.CreateAdd(val31, val38, "39", true, true);
 //            br label %40
-        builder.CreateCondBr(BB40);
+        builder.CreateBr(BB40);
 //
 //        40:                                               ; preds = %25, %26, %34
         builder.SetInsertPoint(BB40);
@@ -293,9 +298,9 @@ int main() {
 //            %46 = zext i8 %45 to i32
         Value *val46 = builder.CreateZExt(val45, Type::getInt32Ty(context));
 //            %47 = add nuw nsw i32 %41, %46
-        Value *val47 = builder.CreateAdd(val41, val46, "", true, true);
+        Value *val47 = builder.CreateAdd(val41, val46, "47", true, true);
 //            br label %48
-        builder.CreateCondBr(BB48);
+        builder.CreateBr(BB48);
 //
 //        48:                                               ; preds = %42, %40
         builder.SetInsertPoint(BB48);
@@ -309,15 +314,15 @@ int main() {
 //        51:                                               ; preds = %48
         builder.SetInsertPoint(BB51);
 //            %52 = add nuw nsw i64 %15, 1
-        Value *val52 = builder.CreateAdd(val15, builder.getInt64(1), "", true, true);
+        Value *val52 = builder.CreateAdd(val15, builder.getInt64(1), "52", true, true);
 //            %53 = getelementptr inbounds [512 x [256 x i8]], ptr @state, i64 0, i64 %6, i64 %52
 //            %54 = load i8, ptr %53, align 1, !tbaa !8, !range !12
 //            %55 = zext i8 %54 to i32
         Value *val55 = builder.CreateZExt(val54, Type::getInt32Ty(context));
 //            %56 = add nuw nsw i32 %49, %55
-        Value *val56 = builder.CreateAdd(val49, val55, "", true, true);
+        Value *val56 = builder.CreateAdd(val49, val55, "56", true, true);
 //            br label %57
-        builder.CreateCondBr(BB57);
+        builder.CreateBr(BB57);
 //
 //        57:                                               ; preds = %51, %48
         builder.SetInsertPoint(BB57);
@@ -339,9 +344,9 @@ int main() {
 //            %64 = zext i8 %63 to i32
         Value *val64 = builder.CreateZExt(val63, Type::getInt32Ty(context));
 //            %65 = add nuw nsw i32 %58, %64
-        Value *val65 = builder.CreateAdd(val58, val64, "", true, true);
+        Value *val65 = builder.CreateAdd(val58, val64, "65", true, true);
 //            br label %66
-        builder.CreateCondBr(BB66);
+        builder.CreateBr(BB66);
 //
 //        66:                                               ; preds = %59, %60
         builder.SetInsertPoint(BB66);
@@ -351,22 +356,22 @@ int main() {
 //            %70 = zext i8 %69 to i32
         Value *val70 = builder.CreateZExt(val69, Type::getInt32Ty(context));
 //            %71 = add nuw nsw i32 %67, %70
-        Value *val71 = builder.CreateAdd(val67, val70, "", true, true);
+        Value *val71 = builder.CreateAdd(val67, val70, "71", true, true);
 //            br i1 %50, label %78, label %72
         builder.CreateCondBr(val50, BB78, BB72);
 //
 //        72:                                               ; preds = %66
         builder.SetInsertPoint(BB72);
 //            %73 = add nuw nsw i64 %15, 1
-        Value *val73 = builder.CreateAdd(val15, builder.getInt64(1), "", true, true);
+        Value *val73 = builder.CreateAdd(val15, builder.getInt64(1), "73", true, true);
 //            %74 = getelementptr inbounds [512 x [256 x i8]], ptr @state, i64 0, i64 %10, i64 %73
 //            %75 = load i8, ptr %74, align 1, !tbaa !8, !range !12
 //            %76 = zext i8 %75 to i32
         Value *val76 = builder.CreateZExt(val75, Type::getInt32Ty(context));
 //            %77 = add nuw nsw i32 %71, %76
-        Value *val77 = builder.CreateAdd(val71, val76, "", true, true);
+        Value *val77 = builder.CreateAdd(val71, val76, "77", true, true);
 //            br label %78
-        builder.CreateCondBr(BB78);
+        builder.CreateBr(BB78);
 //
 //        78:                                               ; preds = %57, %72, %66
         builder.SetInsertPoint(BB78);
@@ -397,7 +402,7 @@ int main() {
 //            %90 = zext i1 %89 to i8
         Value *val90 = builder.CreateZExt(val89, Type::getInt8Ty(context));
 //            br label %91
-        builder.CreateCondBr(BB91);
+        builder.CreateBr(BB91);
 //
 //        91:                                               ; preds = %85, %78
         builder.SetInsertPoint(BB91);
@@ -405,7 +410,7 @@ int main() {
 //            %93 = getelementptr inbounds [512 x [256 x i8]], ptr %1, i64 0, i64 %6, i64 %15
 //            store i8 %92, ptr %93, align 1, !tbaa !8
 //            %94 = add nuw nsw i64 %15, 1
-        Value *val94 = builder.CreateAdd(val15, builder.getInt64(1), "", true, true);
+        Value *val94 = builder.CreateAdd(val15, builder.getInt64(1), "94", true, true);
 //            %95 = icmp eq i64 %94, 256
         Value *val95 = builder.CreateICmpEQ(val94, builder.getInt64(256));
 //            br i1 %95, label %12, label %14, !llvm.loop !13
@@ -417,13 +422,13 @@ int main() {
 //            %98 = trunc i64 %97 to i32
         Value *val98 = builder.CreateTrunc(val97, Type::getInt64Ty(context));
 //            br label %105
-        builder.CreateCondBr(BB105);
+        builder.CreateBr(BB105);
 //
 //        99:                                               ; preds = %102
         builder.SetInsertPoint(BB99);
 //            tail call void @simFlush() #3
 //            %100 = add nuw nsw i32 %3, 1
-        Value *val100 = builder.CreateAdd(val32, builder.getInt32(1), "", true, true);
+        Value *val100 = builder.CreateAdd(val32, builder.getInt32(1), "100", true, true);
 //            %101 = icmp eq i32 %100, 1000
         Value *val101 = builder.CreateICmpEQ(val100, builder.getInt32(1000));
 //            br i1 %101, label %4, label %2, !llvm.loop !14
@@ -434,7 +439,7 @@ int main() {
 //
 //        102:                                              ; preds = %105
 //            %103 = add nuw nsw i64 %97, 1
-        Value *val103 = builder.CreateAdd(val97, builder.getInt64(1), "", true, true);
+        Value *val103 = builder.CreateAdd(val97, builder.getInt64(1), "103", true, true);
 //            %104 = icmp eq i64 %103, 512
         Value *val104 = builder.CreateICmpEQ(val103, builder.getInt64(512));
 //            br i1 %104, label %99, label %96, !llvm.loop !15
@@ -456,7 +461,7 @@ int main() {
 //            %112 = getelementptr inbounds [512 x [256 x i8]], ptr @state, i64 0, i64 %97, i64 %106
 //            store i8 %108, ptr %112, align 1, !tbaa !8
 //            %113 = add nuw nsw i64 %106, 1
-        Value *val113 = builder.CreateAdd(val106, builder.getInt64(1), "", true, true);
+        Value *val113 = builder.CreateAdd(val106, builder.getInt64(1), "113", true, true);
 //            %114 = icmp eq i64 %113, 256
         Value *val114 = builder.CreateICmpEQ(val113, builder.getInt64(0));
 //            br i1 %114, label %102, label %105, !llvm.loop !16
@@ -474,20 +479,29 @@ int main() {
 
     ExecutionEngine *ee = EngineBuilder(std::unique_ptr<Module>(module)).create();
     ee->InstallLazyFunctionCreator([&](const std::string &fnName) -> void * {
-        if (fnName == "simPrepareScreen") {
-            return reinterpret_cast<void *>(simPrepareScreen);
+        if (fnName == "setDead") {
+            return reinterpret_cast<void *>(setDead);
         }
-        if (fnName == "simCheckQuit") {
-            return reinterpret_cast<void *>(simCheckQuit);
+        if (fnName == "setAlive") {
+            return reinterpret_cast<void *>(setAlive);
         }
-        if (fnName == "simSetPixel") {
-            return reinterpret_cast<void *>(simSetPixel);
+        if (fnName == "simSetRender") {
+            return reinterpret_cast<void *>(simSetRender);
+        }
+        if (fnName == "simExit") {
+            return reinterpret_cast<void *>(simExit);
+        }
+        if (fnName == "simPutPixel") {
+            return reinterpret_cast<void *>(simPutPixel);
+        }
+        if (fnName == "simInit") {
+            return reinterpret_cast<void *>(simInit);
         }
         if (fnName == "simFlush") {
             return reinterpret_cast<void *>(simFlush);
         }
-        if (fnName == "ARGB") {
-            return reinterpret_cast<void *>(ARGB);
+        if (fnName == "simRand") {
+            return reinterpret_cast<void *>(simRand);
         }
         return nullptr;
     });
@@ -497,7 +511,7 @@ int main() {
     simInit();
     ArrayRef<GenericValue> noargs;
     GenericValue v = ee->runFunction(appFunc, noargs);
-    simClose();
+    simExit();
     outs() << "Code was run.\n";
     return EXIT_SUCCESS;
 
