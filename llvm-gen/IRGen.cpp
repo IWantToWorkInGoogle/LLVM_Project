@@ -12,6 +12,7 @@
 static SDL_Renderer *Renderer = NULL;
 static SDL_Window *Window = NULL;
 static Uint32 Ticks = 0;
+bool state[SIM_X_SIZE][SIM_Y_SIZE];
 
 void setDead(int x, int y) {
     state[x][y] = false;
