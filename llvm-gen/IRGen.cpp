@@ -118,7 +118,7 @@ int main() {
     ArrayType *outerArrayType = ArrayType::get(innerArrayType, 512);
 
     GlobalVariable *stateMatrix = new GlobalVariable(*module, outerArrayType, false, GlobalValue::ExternalLinkage, builder.getInt1(false));
-    GlobalVariable *newStateMatrix = new GlobalVariable(*module, outerArrayType, false, GloabalVaue::ExternalLinkage, builder.getInt1(false));
+    GlobalVariable *newStateMatrix = new GlobalVariable(*module, outerArrayType, false, GlobalVaue::ExternalLinkage, builder.getInt1(false));
 
     FunctionType *funcType = FunctionType::get(PointerType::get(Type::getInt8Ty(context), 0), {Type::getInt64Ty(context), Type::getInt64Ty(context)}, false);
     Function *func = Function::Create(funcType, Function::ExternalLinkage, "getelementptr_function", module);
