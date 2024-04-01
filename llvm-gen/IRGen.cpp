@@ -153,7 +153,7 @@ int main() {
     FunctionCallee simRandFunc = module->getOrInsertFunction("simRand", simRandType);
 
 //    define dso_local void @app() local_unnamed_addr #0
-    FunctionType appFuncType = FunctionType::get(builder.getVoidTy(), false);
+    FunctionType *appFuncType = FunctionType::get(builder.getVoidTy(), false);
     Function *appFunc =
             Function::Create(appFuncType, Function::ExternalLinkage, "app", module);
     {
@@ -229,10 +229,10 @@ int main() {
         builder.SetInsertPoint(BB11);
 //        11:                                               ; preds = %4
 //            %12 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %8, i64 0
-        Value *val13 = builder.CreateLoad(builder.getInt8Ty(context), val12)->setAlignment(Align(16));
+        Value *val13 = builder.CreateLoad(builder.getInt8Ty(), val12)->setAlignment(Align(16));
 //            %13 = load i8, i8* %12, align 16, !tbaa !5, !range !9
 //            %14 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %8, i64 1
-        Value *val15 = builder.CreateLoad(builder.getInt8Ty(context), val14)->setAlignment(Align(1));
+        Value *val15 = builder.CreateLoad(builder.getInt8Ty(), val14)->setAlignment(Align(1));
 //            %15 = load i8, i8* %14, align 1, !tbaa !5, !range !9
         Value *val16 = builder.CreateAdd(val13, val15, "", true, true);
 //            %16 = add nuw nsw i8 %13, %15
@@ -248,7 +248,7 @@ int main() {
         Value *val19 = builder.CreateZExt(val18, Type::getInt32Ty(context));
 //            %19 = zext i8 %18 to i32
 //            %20 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %5, i64 1
-        Value *val21 = builder.CreateLoad(builder.getInt8Ty(context), val20)->setAlignment(Align(1));
+        Value *val21 = builder.CreateLoad(builder.getInt8Ty(), val20)->setAlignment(Align(1));
 //            %21 = load i8, i8* %20, align 1, !tbaa !5, !range !9
         Value *val22 = builder.CreateZExt(val21, Type::getInt32Ty(context));
 //            %22 = zext i8 %21 to i32
@@ -283,7 +283,7 @@ int main() {
         val34->addIncoming(val23, BB17);
 //            %34 = phi i32 [ %32, %24 ], [ %23, %17 ]
 //            %35 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %5, i64 0
-        Value *val36 = builder.CreateLoad(builder.getInt8Ty(context), val35)->setAlignment(Align(16));
+        Value *val36 = builder.CreateLoad(builder.getInt8Ty(), val35)->setAlignment(Align(16));
 //            %36 = load i8, i8* %35, align 16, !tbaa !5, !range !9
         Value *val37 = builder.CreateICmpEQ(val36, builder.getInt8(0));
 //            %37 = icmp eq i8 %36, 0
@@ -344,7 +344,7 @@ int main() {
         Value *val55 = builder.CreateAnd(val54, builder.getInt64(4294967295));
 //            %55 = and i64 %54, 4294967295
 //            %56 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %8, i64 %55
-        Value *val57 = builder.CreateLoad(builder.getInt8Ty(context), val56)->setAlignment(Align(1));
+        Value *val57 = builder.CreateLoad(builder.getInt8Ty(), val56)->setAlignment(Align(1));
 //            %57 = load i8, i8* %56, align 1, !tbaa !5, !range !9
         Value *val58 = builder.CreateZExt(val57, Type::getInt32Ty(context));
 //            %58 = zext i8 %57 to i32
@@ -363,7 +363,7 @@ int main() {
         builder.SetInsertPoint(BB61);
 //        61:                                               ; preds = %59
 //            %62 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %8, i64 %52
-        Value *val63 = builder.CreateLoad(builder.getInt8Ty(context), val62)->setAlignment(Align(1));
+        Value *val63 = builder.CreateLoad(builder.getInt8Ty(), val62)->setAlignment(Align(1));
 //            %63 = load i8, i8* %62, align 1, !tbaa !5, !range !9
         Value *val64 = builder.CreateZExt(val63, Type::getInt32Ty(context));
 //            %64 = zext i8 %63 to i32
@@ -382,7 +382,7 @@ int main() {
         Value *val69 = builder.CreateAdd(val52, builder.getInt64(1), "", true, true);
 //            %69 = add nuw nsw i64 %52, 1
 //            %70 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %8, i64 %69
-        Value *val71 = builder.CreateLoad(builder.getInt8Ty(context), val70)->setAlignment(Align(1));
+        Value *val71 = builder.CreateLoad(builder.getInt8Ty(), val70)->setAlignment(Align(1));
 //            %71 = load i8, i8* %70, align 1, !tbaa !5, !range !9
         Value *val72 = builder.CreateZExt(val71, Type::getInt32Ty(context));
 //            %72 = zext i8 %71 to i32
@@ -403,7 +403,7 @@ int main() {
         Value *val77 = builder.CreateAnd(val76, builder.getInt64(4294967295));
 //            %77 = and i64 %76, 4294967295
 //            %78 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %5, i64 %77
-        Value *val79 = builder.CreateLoad(builder.getInt8Ty(context), val78)->setAlignment(Align(1));
+        Value *val79 = builder.CreateLoad(builder.getInt8Ty(), val78)->setAlignment(Align(1));
 //            %79 = load i8, i8* %78, align 1, !tbaa !5, !range !9
         Value *val80 = builder.CreateZExt(val79, Type::getInt32Ty(context));
 //            %80 = zext i8 %79 to i32
@@ -419,7 +419,7 @@ int main() {
         Value *val84 = builder.CreateAdd(val52, builder.getInt64(1), "", true, true);
 //            %84 = add nuw nsw i64 %52, 1
 //            %85 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %5, i64 %84
-        Value *val86 = builder.CreateLoad(builder.getInt8Ty(context), val85)->setAlignment(Align(1));
+        Value *val86 = builder.CreateLoad(builder.getInt8Ty(), val85)->setAlignment(Align(1));
 //            %86 = load i8, i8* %85, align 1, !tbaa !5, !range !9
         Value *val87 = builder.CreateZExt(val86, Type::getInt32Ty(context));
 //            %87 = zext i8 %86 to i32
@@ -444,14 +444,14 @@ int main() {
         Value *val93 = builder.CreateAnd(val92, builder.getInt64(4294967295));
 //            %93 = and i64 %92, 4294967295
 //            %94 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %9, i64 %93
-        Value *val95 = builder.CreateLoad(builder.getInt8Ty(context), val94)->setAlignment(Align(1));
+        Value *val95 = builder.CreateLoad(builder.getInt8Ty(), val94)->setAlignment(Align(1));
 //            %95 = load i8, i8* %94, align 1, !tbaa !5, !range !9
         Value *val96 = builder.CreateZExt(val95, Type::getInt32Ty(context));
 //            %96 = zext i8 %95 to i32
         Value *val97 = builder.CreateAdd(val90, val96, "", true, true);
 //            %97 = add nuw nsw i32 %90, %96
 //            %98 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %9, i64 %52
-        Value *val99 = builder.CreateLoad(builder.getInt8Ty(context), val98)->setAlignment(Align(1));
+        Value *val99 = builder.CreateLoad(builder.getInt8Ty(), val98)->setAlignment(Align(1));
 //            %99 = load i8, i8* %98, align 1, !tbaa !5, !range !9
         Value *val100 = builder.CreateZExt(val99, Type::getInt32Ty(context));
 //            %100 = zext i8 %99 to i32
@@ -467,7 +467,7 @@ int main() {
         Value *val104 = builder.CreateAdd(val52, builder.getInt64(1), "", true, true);
 //            %104 = add nuw nsw i64 %52, 1
 //            %105 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %9, i64 %104
-        Value *val106 = builder.CreateLoad(builder.getInt8Ty(context), val105)->setAlignment(Align(1));
+        Value *val106 = builder.CreateLoad(builder.getInt8Ty(), val105)->setAlignment(Align(1));
 //            %106 = load i8, i8* %105, align 1, !tbaa !5, !range !9
         Value *val107 = builder.CreateZExt(val106, Type::getInt32Ty(context));
 //            %107 = zext i8 %106 to i32
@@ -484,7 +484,7 @@ int main() {
         val110->addIncoming(val90, BB89);
 //            %110 = phi i32 [ %101, %91 ], [ %108, %103 ], [ %90, %89 ]
 //            %111 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %5, i64 %52
-        Value *val112 = builder.CreateLoad(builder.getInt8Ty(context), val111)->setAlignment(Align(1));
+        Value *val112 = builder.CreateLoad(builder.getInt8Ty(), val111)->setAlignment(Align(1));
 //            %112 = load i8, i8* %111, align 1, !tbaa !5, !range !9
         Value *val113 = builder.CreateICmpEQ(val112, builder.getInt8(0));
 //            %113 = icmp eq i8 %112, 0
@@ -543,6 +543,7 @@ int main() {
 //
         builder.SetInsertPoint(BB131);
 //        131:                                              ; preds = %134
+        build.CreateCall(simFlushFunc, {});
 //            tail call void (...) @simFlush() #2
         Value *val132 = builder.CreateAdd(val2, builder.getInt32(1), "", true, true);
 //            %132 = add nuw nsw i32 %2, 1
@@ -568,7 +569,7 @@ int main() {
         val138->addIncoming(builder.getInt64(0), BB127);
 //            %138 = phi i64 [ 0, %127 ], [ %148, %145 ]
 //            %139 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @new_state, i64 0, i64 %128, i64 %138
-        Value *val140 = builder.CreateLoad(builder.getInt8Ty(context), val139)->setAlignment(Align(1));
+        Value *val140 = builder.CreateLoad(builder.getInt8Ty(), val139)->setAlignment(Align(1));
 //            %140 = load i8, i8* %139, align 1, !tbaa !5, !range !9
         Value *val141 = builder.CreateICmpEQ(val140, builder.getInt8(0));
 //            %141 = icmp eq i8 %140, 0
@@ -579,19 +580,23 @@ int main() {
 //
         builder.SetInsertPoint(BB143);
 //        143:                                              ; preds = %137
+        Value *putPixelArgs1 = {val129, val142, builder.getInt32(16777215)};
+        builder.CreateCall(simPutPixelFunc, putPixelArgs1);
 //            tail call void @simPutPixel(i32 noundef %129, i32 noundef %142, i32 noundef 16777215) #2
         builder.CreateBr(BB145);
 //            br label %145
 //
         builder.SetInsertPoint(BB144);
 //        144:                                              ; preds = %137
+        Value *putPixelArgs2 = {val130, val142, builder.getInt32(0)};
+        builder.CreateCall(simPutPixelFunc, putPixelArgs2);
 //            tail call void @simPutPixel(i32 noundef %130, i32 noundef %142, i32 noundef 0) #2
         builder.CreateBr(BB145);
 //            br label %145
 //
         builder.SetInsertPoint(BB145);
 //        145:                                              ; preds = %144, %143
-        Value *val146 = builder.CreateLoad(builder.getInt8Ty(context), val139)->setAlignment(Align(1));
+        Value *val146 = builder.CreateLoad(builder.getInt8Ty(), val139)->setAlignment(Align(1));
 //            %146 = load i8, i8* %139, align 1, !tbaa !5, !range !9
 //            %147 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %128, i64 %138
 //            store i8 %146, i8* %147, align 1, !tbaa !5
