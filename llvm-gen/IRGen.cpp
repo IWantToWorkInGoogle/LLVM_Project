@@ -403,6 +403,7 @@ int main() {
 //
         builder.SetInsertPoint(BB61);
 //        61:                                               ; preds = %59
+        Value *val62 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %62 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %8, i64 %52
         LoadInst *load63 = builder.CreateLoad(builder.getInt8Ty(), val62);
         load63->setAlignment(Align(1));
@@ -505,8 +506,9 @@ int main() {
 //            %96 = zext i8 %95 to i32
         Value *val97 = builder.CreateAdd(val90, val96, "", true, true);
 //            %97 = add nuw nsw i32 %90, %96
+         Value *val98 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %98 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %9, i64 %52
-        LoadInst *load99 = builder.CreateLoad(builder.getInt8Ty(), val98)
+        LoadInst *load99 = builder.CreateLoad(builder.getInt8Ty(), val98);
         load99->setAlignment(Align(1));
         Value *val99 = builder.CreateRet(load99);
 //            %99 = load i8, i8* %98, align 1, !tbaa !5, !range !9
