@@ -260,14 +260,14 @@ int main() {
         builder.SetInsertPoint(BB24);
 //        24:                                               ; preds = %17
 //            %25 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %9, i64 0
-        Value *val26 = builder.CreateLoad(builder.getInt8Ty(context), val25)->setAlignment(Align(16));
+        Value *val26 = builder.CreateLoad(builder.getInt8Ty(), val25)->setAlignment(Align(16));
 //            %26 = load i8, i8* %25, align 16, !tbaa !5, !range !9
         Value *val27 = builder.CreateZExt(val26, Type::getInt32Ty(context));
 //            %27 = zext i8 %26 to i32
         Value *val28 = builder.CreateAdd(val23, val27, "", true, true);
 //            %28 = add nuw nsw i32 %23, %27
 //            %29 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %9, i64 1
-        Value *val30 = builder.CreateLoad(builder.getInt8Ty(context), val29)->setAlignment(Align(1));
+        Value *val30 = builder.CreateLoad(builder.getInt8Ty(), val29)->setAlignment(Align(1));
 //            %30 = load i8, i8* %29, align 1, !tbaa !5, !range !9
         Value *val31 = builder.CreateZExt(val30, Type::getInt32Ty(context));
 //            %31 = zext i8 %30 to i32
@@ -357,7 +357,7 @@ int main() {
         val60->addIncoming(builder.getInt32(0), BB51);
         val60->addIncoming(val58, BB53);
 //            %60 = phi i32 [ 0, %51 ], [ %58, %53 ]
-        builder.CreateBr(val6, BB74, BB61);
+        builder.CreateCordBr(val6, BB74, BB61);
 //            br i1 %6, label %74, label %61
 //
         builder.SetInsertPoint(BB61);
@@ -580,7 +580,7 @@ int main() {
 //
         builder.SetInsertPoint(BB143);
 //        143:                                              ; preds = %137
-        Value *putPixelArgs1 = {val129, val142, builder.getInt32(16777215)};
+        Value putPixelArgs1[] = {val129, val142, builder.getInt32(16777215)};
         builder.CreateCall(simPutPixelFunc, putPixelArgs1);
 //            tail call void @simPutPixel(i32 noundef %129, i32 noundef %142, i32 noundef 16777215) #2
         builder.CreateBr(BB145);
@@ -588,7 +588,7 @@ int main() {
 //
         builder.SetInsertPoint(BB144);
 //        144:                                              ; preds = %137
-        Value *putPixelArgs2 = {val130, val142, builder.getInt32(0)};
+        Value putPixelArgs2[] = {val130, val142, builder.getInt32(0)};
         builder.CreateCall(simPutPixelFunc, putPixelArgs2);
 //            tail call void @simPutPixel(i32 noundef %130, i32 noundef %142, i32 noundef 0) #2
         builder.CreateBr(BB145);
