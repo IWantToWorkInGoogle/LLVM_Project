@@ -580,7 +580,7 @@ int main() {
 //
         builder.SetInsertPoint(BB143);
 //        143:                                              ; preds = %137
-        Value putPixelArgs1[] = {val129, val142, builder.getInt32(16777215)};
+        Value *putPixelArgs1[] = {&val129, &val142, builder.getInt32(16777215)};
         builder.CreateCall(simPutPixelFunc, putPixelArgs1);
 //            tail call void @simPutPixel(i32 noundef %129, i32 noundef %142, i32 noundef 16777215) #2
         builder.CreateBr(BB145);
@@ -588,7 +588,7 @@ int main() {
 //
         builder.SetInsertPoint(BB144);
 //        144:                                              ; preds = %137
-        Value putPixelArgs2[] = {val130, val142, builder.getInt32(0)};
+        Value *putPixelArgs2[] = {&val130, &val142, builder.getInt32(0)};
         builder.CreateCall(simPutPixelFunc, putPixelArgs2);
 //            tail call void @simPutPixel(i32 noundef %130, i32 noundef %142, i32 noundef 0) #2
         builder.CreateBr(BB145);
