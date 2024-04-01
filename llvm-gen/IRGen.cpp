@@ -123,8 +123,9 @@ int main() {
     FunctionType *funcType = FunctionType::get(PointerType::get(Type::getInt8Ty(context), 0), {Type::getInt64Ty(context), Type::getInt64Ty(context)}, false);
     Function *func = Function::Create(funcType, Function::ExternalLinkage, "getelementptr_function", module);
 
-    Argument *idx1Arg = &*(func->arg_begin());
-    Argument *idx2Arg = &*(++func->arg_begin());
+    Function::arg_iterator argIter = func->arg_begin();
+    Argument *idx1Arg = &*argIter;
+    Argument *idx2Arg = &*(++argIter);
 
     Value *indices[] = {
             builder.getInt64(0),
@@ -247,11 +248,11 @@ int main() {
         builder.SetInsertPoint(BB11);
 //        11:                                               ; preds = %4
 //            %12 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %8, i64 0
-        Value *val13 = builder.CreateLoad(builder.getInt8Ty(), val12)->setAlignment(Align(16));
+        Value *val13 = builder.CreateLoad(Type::getInt8Ty(), val12)->setAlignment(Align(16));
 //            %13 = load i8, i8* %12, align 16, !tbaa !5, !range !9
         Value *val14 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %14 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %8, i64 1
-        Value *val15 = builder.CreateLoad(builder.getInt8Ty(), val14)->setAlignment(Align(1));
+        Value *val15 = builder.CreateLoad(Type::getInt8Ty(context), val14)->setAlignment(Align(1));
 //            %15 = load i8, i8* %14, align 1, !tbaa !5, !range !9
         Value *val16 = builder.CreateAdd(val13, val15, "", true, true);
 //            %16 = add nuw nsw i8 %13, %15
@@ -279,6 +280,7 @@ int main() {
 //
         builder.SetInsertPoint(BB24);
 //        24:                                               ; preds = %17
+        Value *val25 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %25 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %9, i64 0
         Value *val26 = builder.CreateLoad(builder.getInt8Ty(), val25)->setAlignment(Align(16));
 //            %26 = load i8, i8* %25, align 16, !tbaa !5, !range !9
