@@ -255,7 +255,7 @@ int main() {
 //            %13 = load i8, i8* %12, align 16, !tbaa !5, !range !9
         Value *val14 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %14 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %8, i64 1
-        Load *load15 = builder.CreateLoad(Type::getInt8Ty(context), val14);
+        LoadInst *load15 = builder.CreateLoad(Type::getInt8Ty(context), val14);
         load15->setAlignment(Align(1));
         Value *val15 = builder.CreateRet(load15);
 //            %15 = load i8, i8* %14, align 1, !tbaa !5, !range !9
@@ -318,7 +318,7 @@ int main() {
 //            %34 = phi i32 [ %32, %24 ], [ %23, %17 ]
         Value *val35 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %35 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %5, i64 0
-        LoadInst *load36 = builder.CreateLoad(builder.getInt8Ty(), val35)
+        LoadInst *load36 = builder.CreateLoad(builder.getInt8Ty(), val35);
         load36->setAlignment(Align(16));
         Value *val36 = builder.CreateRet(load36);
 //            %36 = load i8, i8* %35, align 16, !tbaa !5, !range !9
@@ -383,7 +383,7 @@ int main() {
 //            %55 = and i64 %54, 4294967295
         Value *val56 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %56 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %8, i64 %55
-        Value *val57 = builder.CreateLoad(builder.getInt8Ty(), val56);
+        LoadInst *load57 = builder.CreateLoad(builder.getInt8Ty(), val56);
         load57->setAlignment(Align(1));
         Value *val57 = builder.CreateRet(load57);
 //            %57 = load i8, i8* %56, align 1, !tbaa !5, !range !9
@@ -404,7 +404,9 @@ int main() {
         builder.SetInsertPoint(BB61);
 //        61:                                               ; preds = %59
 //            %62 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %8, i64 %52
-        Value *val63 = builder.CreateLoad(builder.getInt8Ty(), val62)->setAlignment(Align(1));
+        LoadInst *load63 = builder.CreateLoad(builder.getInt8Ty(), val62);
+        load63->setAlignment(Align(1));
+        Value *val63 = builder.CreateRet(load63);
 //            %63 = load i8, i8* %62, align 1, !tbaa !5, !range !9
         Value *val64 = builder.CreateZExt(val63, Type::getInt32Ty(context));
 //            %64 = zext i8 %63 to i32
@@ -424,7 +426,7 @@ int main() {
 //            %69 = add nuw nsw i64 %52, 1
         Value *val70 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %70 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %8, i64 %69
-        LoadInst *val71 = builder.CreateLoad(builder.getInt8Ty(), val70);
+        LoadInst *load71 = builder.CreateLoad(builder.getInt8Ty(), val70);
         load71->setAlignment(Align(1));
         Value *val71 = builder.CreateRet(load71);
 //            %71 = load i8, i8* %70, align 1, !tbaa !5, !range !9
@@ -448,7 +450,7 @@ int main() {
 //            %77 = and i64 %76, 4294967295
         Value *val78 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %78 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %5, i64 %77
-        LoadInst *val79 = builder.CreateLoad(builder.getInt8Ty(), val78)
+        LoadInst *load79 = builder.CreateLoad(builder.getInt8Ty(), val78);
         load79->setAlignment(Align(1));
         Value *val79 = builder.CreateRet(load79);
 //            %79 = load i8, i8* %78, align 1, !tbaa !5, !range !9
@@ -467,7 +469,7 @@ int main() {
 //            %84 = add nuw nsw i64 %52, 1
         Value *val85 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %85 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %5, i64 %84
-        LoadInst *load86 = builder.CreateLoad(builder.getInt8Ty(), val85)
+        LoadInst *load86 = builder.CreateLoad(builder.getInt8Ty(), val85);
         load86->setAlignment(Align(1));
         Value *val86 = builder.CreateRet(load86);
 //            %86 = load i8, i8* %85, align 1, !tbaa !5, !range !9
