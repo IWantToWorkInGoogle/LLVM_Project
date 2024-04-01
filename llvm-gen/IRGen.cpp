@@ -216,6 +216,9 @@ int main() {
         builder.SetInsertPoint(BB1);
 //        1:                                                ; preds = %0, %131
         PHINode *val2 = builder.CreatePHI(builder.getInt32Ty(), 2);
+        for (int i = 0;i < 2;i++) {
+            outs() << val2->getIncomingValueForBlock << "\n";
+        }
         val2->addIncoming(builder.getInt32(0), BB0);
 //            %2 = phi i32 [ 0, %0 ], [ %132, %131 ]
         builder.CreateBr(BB4);
