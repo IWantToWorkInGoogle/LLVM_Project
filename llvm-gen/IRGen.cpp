@@ -114,6 +114,21 @@ int main() {
                                           Type::getInt32Ty(context)};
     ArrayRef<Type *> noArgs = {};
 
+    ArrayType *innerArrayType = ArrayType::get(Type::getInt8Ty(context), 256);
+    ArrayType *outerArrayType = ArrayType::get(innerArrayType, 512);
+
+    GlobalVariable *stateMatrix = new GlobalVariable(module, outerArrayType, false, GlobalValue::ExternalLinkage, builder.getInt1(false));
+    GlobalVariable *newStateMatrix = new GlobalVariable(module, outerArrayType, false, GloabalVaue::ExternalLinkage, builder.getInt1(false));
+
+    Argument *idx1Arg = &*(func->arg_begin());
+    Argument *idx2Arg = &*(++func->arg_begin());
+
+    Value *indices[] = {
+            builder.getInt64(0),
+            idx1Arg,
+            idx2Arg
+    };
+
     FunctionType *setDeadType = FunctionType::get(voidType, setDeadParamTypes, false);
     FunctionCallee setDeadFunc = module->getOrInsertFunction("setDead", setDeadType);
 
@@ -231,6 +246,7 @@ int main() {
 //            %12 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %8, i64 0
         Value *val13 = builder.CreateLoad(builder.getInt8Ty(), val12)->setAlignment(Align(16));
 //            %13 = load i8, i8* %12, align 16, !tbaa !5, !range !9
+        Value *val14 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %14 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %8, i64 1
         Value *val15 = builder.CreateLoad(builder.getInt8Ty(), val14)->setAlignment(Align(1));
 //            %15 = load i8, i8* %14, align 1, !tbaa !5, !range !9
@@ -247,6 +263,7 @@ int main() {
 //            %18 = phi i8 [ %16, %11 ], [ 0, %4 ]
         Value *val19 = builder.CreateZExt(val18, Type::getInt32Ty(context));
 //            %19 = zext i8 %18 to i32
+        Value *val20 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %20 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %5, i64 1
         Value *val21 = builder.CreateLoad(builder.getInt8Ty(), val20)->setAlignment(Align(1));
 //            %21 = load i8, i8* %20, align 1, !tbaa !5, !range !9
@@ -266,6 +283,7 @@ int main() {
 //            %27 = zext i8 %26 to i32
         Value *val28 = builder.CreateAdd(val23, val27, "", true, true);
 //            %28 = add nuw nsw i32 %23, %27
+        Value *val29 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %29 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %9, i64 1
         Value *val30 = builder.CreateLoad(builder.getInt8Ty(), val29)->setAlignment(Align(1));
 //            %30 = load i8, i8* %29, align 1, !tbaa !5, !range !9
@@ -282,6 +300,7 @@ int main() {
         val34->addIncoming(val32, BB24);
         val34->addIncoming(val23, BB17);
 //            %34 = phi i32 [ %32, %24 ], [ %23, %17 ]
+        Value *val35 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %35 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %5, i64 0
         Value *val36 = builder.CreateLoad(builder.getInt8Ty(), val35)->setAlignment(Align(16));
 //            %36 = load i8, i8* %35, align 16, !tbaa !5, !range !9
@@ -317,6 +336,7 @@ int main() {
         val47->addIncoming(builder.getInt8(1), BB33);
         val47->addIncoming(val45, BB40);
 //            %47 = phi i8 [ 1, %33 ], [ %45, %40 ]
+        Value *val48 = builder.CreateInBoundsGEP(outerArrayType, newStateMatrix, indices);
 //            %48 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @new_state, i64 0, i64 %5, i64 0
 //            store i8 %47, i8* %48, align 16, !tbaa !5
         builder.CreateBr(BB51);
@@ -343,6 +363,7 @@ int main() {
 //            %54 = add nuw nsw i64 %52, 4294967295
         Value *val55 = builder.CreateAnd(val54, builder.getInt64(4294967295));
 //            %55 = and i64 %54, 4294967295
+        Value *val56 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %56 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %8, i64 %55
         Value *val57 = builder.CreateLoad(builder.getInt8Ty(), val56)->setAlignment(Align(1));
 //            %57 = load i8, i8* %56, align 1, !tbaa !5, !range !9
@@ -381,6 +402,7 @@ int main() {
 //        68:                                               ; preds = %61
         Value *val69 = builder.CreateAdd(val52, builder.getInt64(1), "", true, true);
 //            %69 = add nuw nsw i64 %52, 1
+        Value *val70 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %70 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %8, i64 %69
         Value *val71 = builder.CreateLoad(builder.getInt8Ty(), val70)->setAlignment(Align(1));
 //            %71 = load i8, i8* %70, align 1, !tbaa !5, !range !9
@@ -402,6 +424,7 @@ int main() {
 //            %76 = add nuw nsw i64 %52, 4294967295
         Value *val77 = builder.CreateAnd(val76, builder.getInt64(4294967295));
 //            %77 = and i64 %76, 4294967295
+        Value *val78 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %78 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %5, i64 %77
         Value *val79 = builder.CreateLoad(builder.getInt8Ty(), val78)->setAlignment(Align(1));
 //            %79 = load i8, i8* %78, align 1, !tbaa !5, !range !9
@@ -418,6 +441,7 @@ int main() {
 //        83:                                               ; preds = %74
         Value *val84 = builder.CreateAdd(val52, builder.getInt64(1), "", true, true);
 //            %84 = add nuw nsw i64 %52, 1
+        Value *val85 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %85 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %5, i64 %84
         Value *val86 = builder.CreateLoad(builder.getInt8Ty(), val85)->setAlignment(Align(1));
 //            %86 = load i8, i8* %85, align 1, !tbaa !5, !range !9
@@ -443,6 +467,7 @@ int main() {
 //            %92 = add nuw nsw i64 %52, 4294967295
         Value *val93 = builder.CreateAnd(val92, builder.getInt64(4294967295));
 //            %93 = and i64 %92, 4294967295
+        Value *val94 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %94 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %9, i64 %93
         Value *val95 = builder.CreateLoad(builder.getInt8Ty(), val94)->setAlignment(Align(1));
 //            %95 = load i8, i8* %94, align 1, !tbaa !5, !range !9
@@ -466,6 +491,7 @@ int main() {
 //        103:                                              ; preds = %91
         Value *val104 = builder.CreateAdd(val52, builder.getInt64(1), "", true, true);
 //            %104 = add nuw nsw i64 %52, 1
+        Value *val105 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %105 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %9, i64 %104
         Value *val106 = builder.CreateLoad(builder.getInt8Ty(), val105)->setAlignment(Align(1));
 //            %106 = load i8, i8* %105, align 1, !tbaa !5, !range !9
@@ -483,6 +509,7 @@ int main() {
         val110->addIncoming(val108, BB103);
         val110->addIncoming(val90, BB89);
 //            %110 = phi i32 [ %101, %91 ], [ %108, %103 ], [ %90, %89 ]
+        Value *val111 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %111 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %5, i64 %52
         Value *val112 = builder.CreateLoad(builder.getInt8Ty(), val111)->setAlignment(Align(1));
 //            %112 = load i8, i8* %111, align 1, !tbaa !5, !range !9
@@ -518,6 +545,7 @@ int main() {
         val123->addIncoming(builder.getInt8(1), BB109);
         val123->addIncoming(val121, BB116);
 //            %123 = phi i8 [ 1, %109 ], [ %121, %116 ]
+        Value *val124 = builder.CreateInBoundsGEP(outerArrayType, newStateMatrix, indices);
 //            %124 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @new_state, i64 0, i64 %5, i64 %52
 //            store i8 %123, i8* %124, align 1, !tbaa !5
         Value *val125 = builder.CreateAdd(val52, builder.getInt64(1), "", true, true);
@@ -568,6 +596,7 @@ int main() {
         PHINode *val138 = builder.CreatePHI(builder.getInt64Ty(), 2);
         val138->addIncoming(builder.getInt64(0), BB127);
 //            %138 = phi i64 [ 0, %127 ], [ %148, %145 ]
+        Value *val139 = builder.CreateInBoundsGEP(outerArrayType, newStateMatrix, indices);
 //            %139 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @new_state, i64 0, i64 %128, i64 %138
         Value *val140 = builder.CreateLoad(builder.getInt8Ty(), val139)->setAlignment(Align(1));
 //            %140 = load i8, i8* %139, align 1, !tbaa !5, !range !9
@@ -598,6 +627,7 @@ int main() {
 //        145:                                              ; preds = %144, %143
         Value *val146 = builder.CreateLoad(builder.getInt8Ty(), val139)->setAlignment(Align(1));
 //            %146 = load i8, i8* %139, align 1, !tbaa !5, !range !9
+        Value *val147 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %147 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %128, i64 %138
 //            store i8 %146, i8* %147, align 1, !tbaa !5
         Value *val148 = builder.CreateAdd(val138, builder.getInt64(1), "", true, true);
