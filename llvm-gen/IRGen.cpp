@@ -197,6 +197,7 @@ int main() {
 //        11:                                               ; preds = %4
         Value *val12 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %12 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %8, i64 0
+/*
         LoadInst *val13 = builder.CreateLoad(Type::getInt8Ty(context), val12);
         val13->setAlignment(Align(16));
 //            %13 = load i8, i8* %12, align 16, !tbaa !5, !range !9
@@ -206,6 +207,7 @@ int main() {
         val15->setAlignment(Align(1));
 //            %15 = load i8, i8* %14, align 1, !tbaa !5, !range !9
         Value *val16 = builder.CreateAdd(val13, val15, "", true, true);
+*/
 //            %16 = add nuw nsw i8 %13, %15
         builder.CreateBr(BB17);
 //            br label %17
