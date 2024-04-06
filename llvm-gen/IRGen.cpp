@@ -118,11 +118,18 @@ int main() {
 
     {
         BasicBlock *BB0 = BasicBlock::Create(context, "0", appFunc);
-        BasicBlock *BB1 = BasicBlock::Create(context, "0", appFunc);
+        BasicBlock *BB1 = BasicBlock::Create(context, "1", appFunc);
         BasicBlock *BB3 = BasicBlock::Create(context, "3", appFunc);
         BasicBlock *BB4 = BasicBlock::Create(context, "4", appFunc);
         BasicBlock *BB11 = BasicBlock::Create(context, "11", appFunc);
         BasicBlock *BB17 = BasicBlock::Create(context, "17", appFunc);
+        BasicBlock *BB24 = BasicBlock::Create(context, "24", appFunc);
+        BasicBlock *BB33 = BasicBlock::Create(context, "33", appFunc);
+        BasicBlock *BB40 = BasicBlock::Create(context, "40", appFunc);
+        BasicBlock *BB46 = BasicBlock::Create(context, "46", appFunc);
+        BasicBlock *BB49 = BasicBlock::Create(context, "49", appFunc);
+        BasicBlock *BB51 = BasicBlock::Create(context, "51", appFunc);
+        BasicBlock *BB53 = BasicBlock::Create(context, "53", appFunc);
 
 
         builder.SetInsertPoint(BB3);
@@ -171,8 +178,64 @@ int main() {
 //            %14 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %8, i64 1
 //            %15 = load i8, i8* %14, align 1, !tbaa !5, !range !9
 //            %16 = add nuw nsw i8 %13, %15
-//            br label %17
         builder.CreateBr(BB17);
+//            br label %17
+
+        builder.SetInsertPoint(BB17);
+//        17:                                               ; preds = %11, %4
+//            %18 = phi i8 [ %16, %11 ], [ 0, %4 ]
+//            %19 = zext i8 %18 to i32
+//            %20 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %5, i64 1
+//            %21 = load i8, i8* %20, align 1, !tbaa !5, !range !9
+//            %22 = zext i8 %21 to i32
+//            %23 = add nuw nsw i32 %19, %22
+        builder.CreateCondBr(val10, BB33, BB24);
+//        br i1 %10, label %33, label %24
+//
+        builder.SetInsertPoint(BB24);
+//        24:                                               ; preds = %17
+//            %25 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %9, i64 0
+//            %26 = load i8, i8* %25, align 16, !tbaa !5, !range !9
+//            %27 = zext i8 %26 to i32
+//            %28 = add nuw nsw i32 %23, %27
+//            %29 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %9, i64 1
+//            %30 = load i8, i8* %29, align 1, !tbaa !5, !range !9
+//            %31 = zext i8 %30 to i32
+//            %32 = add nuw nsw i32 %28, %31
+        builder.CreateBr(BB33);
+//        br label %33
+//
+        builder.SetInsertPoint(BB33);
+//        33:                                               ; preds = %24, %17
+//            %34 = phi i32 [ %32, %24 ], [ %23, %17 ]
+//            %35 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %5, i64 0
+//            %36 = load i8, i8* %35, align 16, !tbaa !5, !range !9
+//            %37 = icmp eq i8 %36, 0
+//            %38 = icmp eq i32 %34, 3
+//            %39 = select i1 %37, i1 %38, i1 false
+        builder.CreateCondBr(val39, BB46, BB40);
+//        br i1 %39, label %46, label %40
+//
+        builder.SetInsertPoint(BB40);
+//        40:                                               ; preds = %33
+//            %41 = xor i1 %37, true
+//            %42 = and i32 %34, -2
+//            %43 = icmp eq i32 %42, 2
+//            %44 = select i1 %41, i1 %43, i1 false
+//            %45 = zext i1 %44 to i8
+        builder.CreateBr(BB46);
+//        br label %46
+
+        builder.SetInsertPoint(BB46);
+//        46:                                               ; preds = %40, %33
+//            %47 = phi i8 [ 1, %33 ], [ %45, %40 ]
+//            %48 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @new_state, i64 0, i64 %5, i64 0
+//            store i8 %47, i8* %48, align 16, !tbaa !5
+        builder.CreateBr(BB51);
+//        br label %51
+// TODO Change to BR
+        builder.CreateRetVoid();
+
     }
 
     builder.SetInsertPoint(entryBB);
