@@ -124,9 +124,20 @@ int main() {
     InitializeNativeTargetAsmPrinter();
 
     ExecutionEngine *ee = EngineBuilder(std::unique_ptr<Module>(module)).create();
+    ee->InstallLazyFunctionCreator([&](const std::string &fnName) -> void * {
+        if (fnName == "simPutPixel") {
+            return reinterpret_cast<void *>(simPutPixel);
+        }
+        if (fnName == "simFlush") {
+            return reinterpret_cast<void *>(simFlush);
+        }
+        return nullptr;
+    });
     ee->finalizeObject();
+    simInit();
     ArrayRef<GenericValue> noargs;
     GenericValue v = ee->runFunction(mainFunc, noargs);
+    simExit();
     outs() << "Code was run: " << v.IntVal << "\n";
     return 0;
 }
