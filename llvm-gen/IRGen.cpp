@@ -190,7 +190,8 @@ int main() {
         val5->addIncoming(val9, BB49);
         Value *val10 = builder.CreateICmpUGT(val5, builder.getInt64(510));
 //            %10 = icmp ugt i64 %5, 510
-        builder.CreateCondBr(val6, BB17, BB11);
+        builder.CreateRetVoid();
+// TODO        builder.CreateCondBr(val6, BB17, BB11);
 //            br i1 %6, label %17, label %11
 //
         builder.SetInsertPoint(BB11);
