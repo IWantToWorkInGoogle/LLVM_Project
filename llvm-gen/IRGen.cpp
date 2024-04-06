@@ -213,8 +213,10 @@ int main() {
 //            %37 = icmp eq i8 %36, 0
 //            %38 = icmp eq i32 %34, 3
 //            %39 = select i1 %37, i1 %38, i1 false
-        builder.CreateCondBr(val39, BB46, BB40);
+        // TODO builder.CreateCondBr(val39, BB46, BB40);
+        builder.CreateRetVoid();
 //        br i1 %39, label %46, label %40
+
 //
         builder.SetInsertPoint(BB40);
 //        40:                                               ; preds = %33
@@ -231,10 +233,9 @@ int main() {
 //            %47 = phi i8 [ 1, %33 ], [ %45, %40 ]
 //            %48 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @new_state, i64 0, i64 %5, i64 0
 //            store i8 %47, i8* %48, align 16, !tbaa !5
-        builder.CreateBr(BB51);
-//        br label %51
-// TODO Change to BR
+//      TODO builder.CreateBr(BB51);
         builder.CreateRetVoid();
+//        br label %51
 
     }
 
