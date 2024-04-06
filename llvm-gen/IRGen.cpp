@@ -113,6 +113,23 @@ int main() {
     // entry:
     BasicBlock *entryBB = BasicBlock::Create(context, "entry", mainFunc);
 
+    FunctionType *appFuncType = FunctionType::get(builder.getVoidTy(), false);
+    Function *appFunc = Function::Create(appFuncType, Function::ExternalLinkage, "app", module);
+
+    {
+        BasicBlock *BB0 = BasicBlock::Create(context, "0", appFunc);
+        BasicBlock *BB3 = BasicBlock::Create(context, "3", appFunc);
+
+
+        builder.SetInsertPoint(BB0);
+
+        builder.CreateBr(BB3);
+
+        builder.SetInsertPoint(BB3);
+
+        builder.CreateRetVoid();
+    }
+
     builder.SetInsertPoint(entryBB);
     builder.CreateRetVoid();
 
