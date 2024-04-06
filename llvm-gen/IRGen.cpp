@@ -106,10 +106,29 @@ int main() {
     Module *module = new Module("top", context);
     IRBuilder<> builder(context);
 
+    ArrayType *innerArrayType = ArrayType::get(Type::getInt8Ty(context), 256);
+    ArrayType *outerArrayType = ArrayType::get(innerArrayType, 512);
+
+    GlobalVariable *stateMatrix = new GlobalVariable(*module, outerArrayType, false, GlobalValue::ExternalLinkage, builder.getInt1(false));
+    GlobalVariable *newStateMatrix = new GlobalVariable(*module, outerArrayType, false, GlobalValue::ExternalLinkage, builder.getInt1(false));
+
+    FunctionType *funcType = FunctionType::get(PointerType::get(Type::getInt8Ty(context), 0), {Type::getInt64Ty(context), Type::getInt64Ty(context)}, false);
+    Function *func = Function::Create(funcType, Function::ExternalLinkage, "getelementptr_function", module);
+
+    Function::arg_iterator argIter = func->arg_begin();
+    Argument *idx1Arg = &*argIter;
+    Argument *idx2Arg = &*(++argIter);
+
+    Value *indices[] = {
+            builder.getInt64(0),
+            idx1Arg,
+            idx2Arg
+    };
+
     // declare void @main()
-    FunctionType *funcType = FunctionType::get(builder.getVoidTy(), false);
+    FunctionType *mainFuncType = FunctionType::get(builder.getVoidTy(), false);
     Function *mainFunc =
-            Function::Create(funcType, Function::ExternalLinkage, "main", module);
+            Function::Create(mainFuncType, Function::ExternalLinkage, "main", module);
     // entry:
     BasicBlock *entryBB = BasicBlock::Create(context, "entry", mainFunc);
 
@@ -142,7 +161,9 @@ int main() {
 //
         builder.SetInsertPoint(BB1);
 //        1:                                                ; preds = %0, %131
-        PHINode *val2 = builder.CreatePHI(builder.getInt32Ty(), 1);
+        PHINode *val2 = builder.CreatePHI(builder.getInt32Ty(),
+//                          TODO 2);
+                                          1);
         val2->addIncoming(builder.getInt32(0), BB0);
 //            %2 = phi i32 [ 0, %0 ], [ %132, %131 ]
         builder.CreateBr(BB4);
@@ -155,7 +176,7 @@ int main() {
 //
         builder.SetInsertPoint(BB4);
 //        4:                                                ; preds = %1, %49
-        PHINode *val5 = builder.CreatePHI(builder.getInt64Ty(), 1);
+        PHINode *val5 = builder.CreatePHI(builder.getInt64Ty(),2);
         val5->addIncoming(builder.getInt64(0), BB1);
 //            %5 = phi i64 [ 0, %1 ], [ %9, %49 ]
         Value *val6= builder.CreateICmpEQ(val5, builder.getInt64(0));
@@ -166,6 +187,7 @@ int main() {
 //            %8 = and i64 %7, 4294967295
         Value *val9 = builder.CreateAdd(val5, builder.getInt64(1), "", true, true);
 //            %9 = add nuw nsw i64 %5, 1
+        val5->addIncoming(val9, BB49);
         Value *val10 = builder.CreateICmpUGT(val5, builder.getInt64(510));
 //            %10 = icmp ugt i64 %5, 510
         builder.CreateCondBr(val6, BB17, BB11);
@@ -173,10 +195,19 @@ int main() {
 //
         builder.SetInsertPoint(BB11);
 //        11:                                               ; preds = %4
+        Value *val12 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %12 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %8, i64 0
+        LoadInst *load13 = builder.CreateLoad(Type::getInt8Ty(context), val12);
+        load13->setAlignment(Align(16));
+        Value *val13 = builder.CreateRet(load13);
 //            %13 = load i8, i8* %12, align 16, !tbaa !5, !range !9
+        Value *val14 = builder.CreateInBoundsGEP(outerArrayType, stateMatrix, indices);
 //            %14 = getelementptr inbounds [512 x [256 x i8]], [512 x [256 x i8]]* @state, i64 0, i64 %8, i64 1
+        LoadInst *load15 = builder.CreateLoad(Type::getInt8Ty(context), val14);
+        load15->setAlignment(Align(1));
+        Value *val15 = builder.CreateRet(load15);
 //            %15 = load i8, i8* %14, align 1, !tbaa !5, !range !9
+        Value *val16 = builder.CreateAdd(val13, val15, "", true, true);
 //            %16 = add nuw nsw i8 %13, %15
         builder.CreateBr(BB17);
 //            br label %17
@@ -236,6 +267,10 @@ int main() {
 //      TODO builder.CreateBr(BB51);
         builder.CreateRetVoid();
 //        br label %51
+
+
+
+// TODO        val2->addIncoming(val132, BB131);
 
     }
 
