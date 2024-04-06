@@ -136,19 +136,19 @@ int main() {
     Function *appFunc = Function::Create(appFuncType, Function::ExternalLinkage, "app", module);
 
     {
-        BasicBlock *BB0 = BasicBlock::Create(context, "0", appFunc);
-        BasicBlock *BB1 = BasicBlock::Create(context, "1", appFunc);
-        BasicBlock *BB3 = BasicBlock::Create(context, "3", appFunc);
-        BasicBlock *BB4 = BasicBlock::Create(context, "4", appFunc);
-        BasicBlock *BB11 = BasicBlock::Create(context, "11", appFunc);
-        BasicBlock *BB17 = BasicBlock::Create(context, "17", appFunc);
-        BasicBlock *BB24 = BasicBlock::Create(context, "24", appFunc);
-        BasicBlock *BB33 = BasicBlock::Create(context, "33", appFunc);
-        BasicBlock *BB40 = BasicBlock::Create(context, "40", appFunc);
-        BasicBlock *BB46 = BasicBlock::Create(context, "46", appFunc);
-        BasicBlock *BB49 = BasicBlock::Create(context, "49", appFunc);
-        BasicBlock *BB51 = BasicBlock::Create(context, "51", appFunc);
-        BasicBlock *BB53 = BasicBlock::Create(context, "53", appFunc);
+        BasicBlock *BB0 = BasicBlock::Create(context, "", appFunc);
+        BasicBlock *BB1 = BasicBlock::Create(context, "", appFunc);
+        BasicBlock *BB3 = BasicBlock::Create(context, "", appFunc);
+        BasicBlock *BB4 = BasicBlock::Create(context, "", appFunc);
+        BasicBlock *BB11 = BasicBlock::Create(context, "", appFunc);
+        BasicBlock *BB17 = BasicBlock::Create(context, "", appFunc);
+        BasicBlock *BB24 = BasicBlock::Create(context, "", appFunc);
+        BasicBlock *BB33 = BasicBlock::Create(context, "", appFunc);
+        BasicBlock *BB40 = BasicBlock::Create(context, "", appFunc);
+        BasicBlock *BB46 = BasicBlock::Create(context, "", appFunc);
+        BasicBlock *BB49 = BasicBlock::Create(context, "", appFunc);
+        BasicBlock *BB51 = BasicBlock::Create(context, "", appFunc);
+        BasicBlock *BB53 = BasicBlock::Create(context, "", appFunc);
 
 
         builder.SetInsertPoint(BB3);
